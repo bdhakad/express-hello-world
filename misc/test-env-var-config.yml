@@ -13,6 +13,18 @@ jobs: # basic units of work in a run
       # Run a step to setup an environment variable
       # Redirect MY_ENV_VAR into $BASH_ENV
       - run:
+          name: "A unique identifier for the workflow instance of the current job"
+          command: echo ${CIRCLE_WORKFLOW_ID}
+      - run:
+          name: "The number of the CircleCI build"
+          command: echo ${CIRCLE_BUILD_NUM}
+      - run:
+          name: "The number of the associated GitHub or Bitbucket pull request"
+          command: echo ${CIRCLE_PR_NUMBER}
+      - run:
+          name: "The SHA1 hash of the last commit of the current build"
+          command: echo ${CIRCLE_SHA1}                
+      - run:
           name: "Setup custom environment variables"
           command: echo 'export MY_ENV_VAR="FOO"' >> $BASH_ENV
       - run: # print the name of the branch we're on

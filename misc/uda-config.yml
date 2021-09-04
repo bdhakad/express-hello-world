@@ -14,8 +14,8 @@ jobs:
     steps:
       - run: echo hello
       - run: # print the name of the branch we're on
-          name: "What branch am I on?"
-          command: echo ${CIRCLE_BRANCH}
+          name: "The SHA1 hash of the last commit of the current build"
+          command: echo ${CIRCLE_SHA1}
       - run: echo "tag = <<pipeline.git.tag>>"
       - run: echo "My pipeline id is << pipeline.id >> and my git branch is << pipeline.git.branch >>."  
   print_world:
