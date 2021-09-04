@@ -49,6 +49,6 @@ jobs:
       - run: npm run test
       - run:
           name: Upload Failed Tests
-          command: cat fail_tests.log
+          command: cat ~/fail_tests.log
           when: on_fail
       
