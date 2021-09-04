@@ -20,11 +20,11 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: npm i
+      - run: npm install
       - save_cache:
           key: "npm-packages"
           paths: 
-            - src/node_modules
+            - /src/node_modules
   test:
     docker:
       - image: circleci/node:13.8.0
@@ -33,6 +33,7 @@ jobs:
       - restore_cache:
           keys:
             - "npm-packages"
+      - run: npm i      
       - run: npm run test
       - run:
           name: Upload Failed Tests
