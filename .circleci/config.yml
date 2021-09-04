@@ -29,7 +29,6 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm install
-      - run: npm run test
       - run: echo "text to output here" > ~/output.txt
       - persist_to_workspace:
           root: ~/
@@ -48,4 +47,8 @@ jobs:
           steps:
             - run: npm install
       - run: npm run test
+      - run:
+          name: Upload Failed Tests
+          command: echo "test failled"
+          when: on_fail
       
