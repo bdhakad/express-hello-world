@@ -8,10 +8,16 @@ jobs: # basic units of work in a run
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    environment:
+      CIRCLE_COMPARE_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<<pipeline.git.revision>>
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
       # Run a step to setup an environment variable
       # Redirect MY_ENV_VAR into $BASH_ENV
+      - run: echo "My pipeline id is << pipeline.id >> and my git branch is << pipeline.git.branch >>." 
+      - run:
+          name: "print the project env variable"
+          command: echo ${MY_ENV_VAR}
       - run:
           name: "A unique identifier for the workflow instance of the current job"
           command: echo ${CIRCLE_WORKFLOW_ID}
