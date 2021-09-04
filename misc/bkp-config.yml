@@ -4,24 +4,34 @@ version: 2.1
 orbs:
  # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
-  
-jobs:
-  print_hello:
-    docker:
-      - image: circleci/node@13.8.0
-    steps:
-      - run: echo hello  
-  print_world:
-    docker:
-      - image: circleci/node@13.8.0
-    steps:
-      - run: echo world
-
+  node: circleci/node@1.1
 workflows:
+  # Name the workflow "welcome"
   welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - welcome/run
-      - print_hello
-      - print_world:
+      - build
+      - test:
           requires:
-            - print_hello          
+            - build  
+jobs:
+  build:
+    executor:
+      name: node/default
+      tag: '10.4'
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+      - run: npm run test
+  test:
+    executor:
+      name: node/default
+      tag: '10.4'
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+      - run: npm run test    
