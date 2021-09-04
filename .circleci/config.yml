@@ -24,7 +24,7 @@ jobs:
       - save_cache:
           key: "npm-packages"
           paths: 
-            - /node_modules
+            - src/node_modules
   test:
     docker:
       - image: circleci/node:13.8.0
