@@ -13,7 +13,11 @@ workflows:
       - build
       - test:
           requires:
-            - build  
+            - build 
+commands:
+  print_pipeline_id:
+    steps:
+      - run: echo ${CIRCLE_WORKFLOW_ID}             
 jobs:
   build:
     executor:
@@ -21,10 +25,21 @@ jobs:
       tag: '10.4'
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-      - run: npm run test
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - print_pipeline_id
+      # - node/with-cache:
+      #     steps:
+      #       - run: npm install
       - run: echo "text to output here" > ~/output.txt
       - persist_to_workspace:
           root: ~/
@@ -43,4 +58,8 @@ jobs:
           steps:
             - run: npm install
       - run: npm run test
+      - run:
+          name: Upload Failed Tests
+          command: echo "test failures"
+          when: on_fail
       

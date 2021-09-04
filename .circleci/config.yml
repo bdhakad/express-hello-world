@@ -1,10 +1,7 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 # Use a package of configuration called an orb.
-orbs:
- # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-  node: circleci/node@1.1
+
 workflows:
   # Name the workflow "welcome"
   welcome:
@@ -13,42 +10,46 @@ workflows:
       - build
       - test:
           requires:
-            - build 
-commands:
-  print_pipeline_id:
-    steps:
-      - run: echo ${CIRCLE_WORKFLOW_ID}             
+            - build
+      - analyze:
+          requires:
+            - test                  
 jobs:
   build:
-    executor:
-      name: node/default
-      tag: '10.4'
+    docker:
+      - image: circleci/node:13.8.0
     steps:
-      - print_pipeline_id
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-      - run: echo "text to output here" > ~/output.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - output.txt
+      - run: npm i
+      - save_cache:
+          key: "npm-packages"
+          paths: 
+            - /node_modules
   test:
-    executor:
-      name: node/default
-      tag: '10.4'
+    docker:
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
-      - run: cat ~/output.txt
-      - node/with-cache:
-          steps:
-            - run: npm install
+      - restore_cache:
+          keys:
+            - "npm-packages"
       - run: npm run test
       - run:
           name: Upload Failed Tests
-          command: cat ~/fail_tests.log
+          command: echo "test failures"
           when: on_fail
+
+analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm audit
+      - run:
+          name: Upload Failed Tests
+          command: echo "test failures"
+          when: on_fail          
       
