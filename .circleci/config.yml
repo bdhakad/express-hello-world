@@ -14,8 +14,6 @@ workflows:
       - build  
 jobs:
   build:
-    requires:
-      - welcome/run
     executor:
       name: node/default
       tag: '10.4'
@@ -24,4 +22,4 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm install
-      # - run: npm run test
+      - run: npm run test
