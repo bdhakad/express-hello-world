@@ -13,11 +13,8 @@ jobs:
       CIRCLE_COMPARE_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<<pipeline.git.revision>>
     steps:
       - run:
-          name: "Setup custom environment variables"
-          command: echo 'export MY_ENV_VAR="BRAJESH"' >> $BASH_ENV
-      - run: # print the name of the branch we're on
-          name: "my env var"
-          command: echo ${MY_ENV_VAR}    
+          name: "print the project env variable"
+          command: echo ${MY_ENV_VAR}
       - run: # print the name of the branch we're on
           name: "The SHA1 hash of the last commit of the current build"
           command: echo ${CIRCLE_SHA1}
