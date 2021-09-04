@@ -13,8 +13,8 @@ jobs:
       CIRCLE_COMPARE_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<<pipeline.git.revision>>
     steps:
       - run: echo hello
-      - run: echo "git url <<pipeline.project.git_url>> type <<pipeline.project.type>>  tag "
-      - run: echo "tag <<pipeline.git.tag>>"
+      - run: echo "git url = <<pipeline.project.git_url>> type = <<pipeline.project.type>> "
+      - run: echo "tag = <<pipeline.git.tag>>"
       - run: echo "My pipeline id is << pipeline.id >> and my git branch is << pipeline.git.branch >>."  
   print_world:
     docker:
@@ -25,7 +25,6 @@ jobs:
 workflows:
   welcome:
     jobs:
-      - welcome/run
       - print_hello
       - print_world:
           requires:
