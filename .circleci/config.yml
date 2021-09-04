@@ -9,8 +9,12 @@ jobs:
   print_hello:
     docker:
       - image: circleci/node:13.8.0
+    environment:
+      CIRCLE_COMPARE_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<<pipeline.git.revision>>
     steps:
-      - run: echo hello  
+      - run: echo hello
+      - run: echo $CIRCLE_COMPARE_URL
+      - run: echo "My pipeline id is << pipeline.id >> and my git branch is << pipeline.git.branch >>."  
   print_world:
     docker:
       - image: circleci/node:13.8.0
