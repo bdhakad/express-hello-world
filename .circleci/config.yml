@@ -13,7 +13,9 @@ jobs:
       CIRCLE_COMPARE_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<<pipeline.git.revision>>
     steps:
       - run: echo hello
-      - run: echo "branch = ${CIRCLE_BRANCH}"
+      - run: # print the name of the branch we're on
+          name: "What branch am I on?"
+          command: echo ${CIRCLE_BRANCH}
       - run: echo "tag = <<pipeline.git.tag>>"
       - run: echo "My pipeline id is << pipeline.id >> and my git branch is << pipeline.git.branch >>."  
   print_world:
