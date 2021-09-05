@@ -26,7 +26,7 @@ Resources:
       Name: PublicIp
       Type: String
       Value: !GetAtt EC2Instance.PublicIp
-  instance_url:
+  instanceUrl:
     Type: AWS::SSM::Parameter
     Properties:
       Name: instanceUrl
