@@ -13,6 +13,9 @@ workflows:
       - configure_infrastructure:
           requires:
               - create_infrastructure
+      - smoke_test:
+          requires:
+              - configure_infrastructure        
       # - build
       # - test:
       #     requires:
@@ -53,6 +56,20 @@ jobs:
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text >> inventory
+  smoke_test:
+    docker:
+    - image: alpine:latest
+    steps:
+      - checkout      
+      - run:
+          name: smoke_test
+          command: |
+            if curl -s --head "https://google.com" 
+            then
+              echo "It worked!"
+            else
+              echo "It failed"
+            fi         
            
 
   # build:
