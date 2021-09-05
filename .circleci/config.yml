@@ -51,11 +51,11 @@ jobs:
             --stack-name circle-stack \
             --template-file cfn-template.yml
       - run:
-          name: pull public ips in inventory.txt
+          name: pull public ips 
           command: |
-            aws ec2 describe-instances \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text >> inventory
+            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> output.txt
+      - run: cat output.txt
+            
   smoke_test:
     docker:
     - image: alpine:latest
@@ -65,7 +65,7 @@ jobs:
       - run:
           name: smoke_test
           command: |
-            if curl -s --head http://3.91.206.3289:3000
+            if curl -s --head http://${PUBLIC_IP}:3000
             then
               return 0
             else
