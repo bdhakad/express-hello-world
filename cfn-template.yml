@@ -16,7 +16,6 @@ Resources:
           FromPort: 3000
           ToPort: 3000
           CidrIp: 0.0.0.0/0
-      Tags:
         - IpProtocol: tcp
           FromPort: "22"
           ToPort: "22"
