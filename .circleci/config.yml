@@ -30,7 +30,7 @@ jobs:
           name: update public ip of instance in inventory.txt
           command: |
             value=`cat publicIp.txt`
-            $value >> inventory.txt
+            echo $value >> inventory.txt
       - run: cat inventory.txt            
       - add_ssh_keys:
           fingerprints: ["4c:e6:72:4d:76:84:ef:12:2b:ea:d7:d5:66:d5:41:79"]
