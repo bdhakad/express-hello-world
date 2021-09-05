@@ -25,7 +25,7 @@ Resources:
     Properties:
       Name: PublicIp
       Type: String
-      Value: !GetAtt EC2Instance.PublicIp        
+      Value: !Join ["", ["http://", !GetAtt EC2Instance.PublicIp, ":3000"]]      
 
 Outputs:
   PublicIp:
