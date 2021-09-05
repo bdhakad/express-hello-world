@@ -54,7 +54,7 @@ jobs:
           name: pull public ips 
           command: |
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
-      - run: echo $(<config.txt) 
+      - run: echo $(<publicIp.txt) 
       - save_cache:
           key: my-cache
           paths:
