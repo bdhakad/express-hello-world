@@ -20,6 +20,12 @@ Resources:
           FromPort: "22"
           ToPort: "22"
           CidrIp: 0.0.0.0/0
+  BasicParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: PublicIp
+      Type: String
+      Value: !GetAtt EC2Instance.PublicIp        
 
 Outputs:
   PublicIp:
