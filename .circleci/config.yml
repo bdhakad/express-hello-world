@@ -70,11 +70,12 @@ jobs:
           keys:
             - v1-my-cache
       - run: cat publicIp.txt  
-      - run: echo $(<publicIp.txt)  
+      # - run: read test < <(echo hello world)  
       - run:
           name: smoke_test
           command: |
-            if curl -s --head $(<publicIp.txt)
+            value=`cat publicIp.txt`
+            if curl -s --head $value
             then
               return 0
             else
