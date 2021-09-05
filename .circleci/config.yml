@@ -9,14 +9,13 @@ workflows:
   welcome:
     # Run the welcome/run job in its own container
     jobs:
-      # - create_infrastructure
-      # - configure_infrastructure:
-      #     requires:
-      #         - create_infrastructure
-      - smoke_test
-      # :
-      #     requires:
-      #         - configure_infrastructure        
+      - create_infrastructure
+      - configure_infrastructure:
+          requires:
+              - create_infrastructure
+      - smoke_test:
+          requires:
+              - configure_infrastructure        
       # - build
       # - test:
       #     requires:
@@ -51,19 +50,18 @@ jobs:
             aws cloudformation deploy \
             --stack-name circle-stack \
             --template-file cfn-template.yml
-      
-            
-  smoke_test:
-    docker:
-    - image: amazon/aws-cli
-    steps:
-      - checkout
-      # - run: apk add --update curl
       - run:
           name: pull public ips 
           command: |
-            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> output.txt   
-      - run: cat output.txt         
+            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> ${PUBLIC_IP}   
+      # - run: cat output.txt
+            
+  smoke_test:
+    docker:
+    - image: alpine:latest
+    steps:
+      - checkout
+      - run: apk add --update curl         
       - run:
           name: smoke_test
           command: |
