@@ -53,10 +53,9 @@ jobs:
       - run:
           name: pull public ips 
           command: |
-            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
-      - run: cat publicIp.txt      
+            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt     
       - save_cache:
-          key: v1-my-cache
+          key: ${CIRCLE_WORKFLOW_ID}-my-cache
           paths:
             - publicIp.txt
             
@@ -68,9 +67,8 @@ jobs:
       - run: apk add --update curl 
       - restore_cache:
           keys:
-            - v1-my-cache
-      - run: cat publicIp.txt  
-      # - run: read test < <(echo hello world)  
+            - ${CIRCLE_WORKFLOW_ID}-my-cache
+      - run: cat publicIp.txt   
       - run:
           name: smoke_test
           command: |
