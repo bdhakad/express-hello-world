@@ -54,7 +54,7 @@ jobs:
           name: pull public ips 
           command: |
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> ${PUBLIC_IP}   
-      # - run: cat output.txt
+      - run: echo ${PUBLIC_IP}
             
   smoke_test:
     docker:
