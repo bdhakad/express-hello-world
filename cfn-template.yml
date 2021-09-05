@@ -20,12 +20,18 @@ Resources:
           FromPort: "22"
           ToPort: "22"
           CidrIp: 0.0.0.0/0
-  BasicParameter:
+  PublicIp:
     Type: AWS::SSM::Parameter
     Properties:
       Name: PublicIp
       Type: String
-      Value: !Join ["", ["http://", !GetAtt EC2Instance.PublicIp, ":3000"]]      
+      Value: !GetAtt EC2Instance.PublicIp
+  instance_url:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: instance_url
+      Type: String
+      Value: !Join ["", ["http://", !GetAtt EC2Instance.PublicIp, ":3000"]]          
 
 Outputs:
   PublicIp:

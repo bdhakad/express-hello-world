@@ -22,7 +22,16 @@ jobs:
     docker:
     - image: python:3.7-alpine3.11
     steps:
-      - checkout 
+      - checkout
+      - restore_cache:
+          keys:
+            - ${CIRCLE_SHA1} 
+      - run:
+          name: update public ip of instance in inventory.txt
+          command: |
+            value=`cat publicIp.txt`
+            $value >> inventory.txt
+      - run: cat inventory.txt            
       - add_ssh_keys:
           fingerprints: ["4c:e6:72:4d:76:84:ef:12:2b:ea:d7:d5:66:d5:41:79"]
       - run:
@@ -38,7 +47,6 @@ jobs:
     - image: amazon/aws-cli
     steps:
       - checkout 
-      - run: ls -ltra
       - run:
           name: Ensure backend infrastructure exists
           command: |
@@ -49,11 +57,13 @@ jobs:
       - run:
           name: pull public ips 
           command: |
-            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt     
+            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
+            aws ssm get-parameter --name "instance_url" --with-decryption --output text --query Parameter.Value >> instance_url.txt     
       - save_cache:
           key: ${CIRCLE_SHA1}
           paths:
             - publicIp.txt
+            - instance_url.txt
             
   smoke_test:
     docker:
@@ -64,11 +74,11 @@ jobs:
       - restore_cache:
           keys:
             - ${CIRCLE_SHA1}
-      - run: cat publicIp.txt   
+      - run: cat instance_url.txt
       - run:
           name: smoke_test
           command: |
-            value=`cat publicIp.txt`
+            value=`cat instance_url.txt`
             if curl -s --head $value
             then
               return 0
