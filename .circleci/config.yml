@@ -10,12 +10,12 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - create_infrastructure
-      - configure_infrastructure:
-          requires:
-              - create_infrastructure
+      # - configure_infrastructure:
+      #     requires:
+      #         - create_infrastructure
       - smoke_test:
           requires:
-              - configure_infrastructure        
+              - create_infrastructure        
       # - build
       # - test:
       #     requires:
@@ -69,11 +69,11 @@ jobs:
           keys:
             - my-cache
       - run: cat publicIp.txt  
-      - run: echo $(<publicIp.txt)    
+      - run: value=$(<publicIp.txt)    
       - run:
           name: smoke_test
           command: |
-            if curl -s --head http://$(<publicIp.txt):3000
+            if curl -s --head http://$value:3000
             then
               return 0
             else
