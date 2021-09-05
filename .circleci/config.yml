@@ -18,31 +18,7 @@ workflows:
               - configure_infrastructure        
                  
 jobs:
-  configure_infrastructure:
-    docker:
-    - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - myapp-{{ checksum "main-remote.yml" }}
-      - run: cat publicIp.txt       
-      - run:
-          name: update public ip of instance in inventory.txt
-          command: |
-            value=`cat publicIp.txt`
-            echo $value >> inventory.txt
-      - run: cat inventory.txt            
-      - add_ssh_keys:
-          fingerprints: ["4c:e6:72:4d:76:84:ef:12:2b:ea:d7:d5:66:d5:41:79"]
-      - run:
-          name: install dependencies
-          command: |
-            apk add --update ansible     
-      - run:
-          name: configure server
-          command: |
-            ansible-playbook -i inventory.txt main-remote.yml
+  # deploy infracture or update
   create_infrastructure:
     docker:
     - image: amazon/aws-cli
@@ -53,10 +29,9 @@ jobs:
           command: |
             aws cloudformation deploy \
             --stack-name circle-stack \
-            --template-file cfn-template.yml
-      - run: echo myapp-{{ checksum "main-remote.yml" }}      
+            --template-file cfn-template.yml     
       - run:
-          name: pull public ips 
+          name: pull public ip and url for smoke test
           command: |
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
             aws ssm get-parameter --name "instanceUrl" --with-decryption --output text --query Parameter.Value >> instanceUrl.txt     
@@ -65,7 +40,33 @@ jobs:
           paths:
             - publicIp.txt
             - instanceUrl.txt
+
+  #  configure the ec2 instance
+  configure_infrastructure:
+    docker:
+    - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - myapp-{{ checksum "main-remote.yml" }}      
+      - run:
+          name: update public ip of instance in inventory.txt
+          command: |
+            value=`cat publicIp.txt`
+            echo $value >> inventory.txt          
+      - add_ssh_keys:
+          fingerprints: ["4c:e6:72:4d:76:84:ef:12:2b:ea:d7:d5:66:d5:41:79"]
+      - run:
+          name: install dependencies
+          command: |
+            apk add --update ansible     
+      - run:
+          name: configure server
+          command: |
+            ansible-playbook -i inventory.txt main-remote.yml
             
+  #  smoke test the app deployed
   smoke_test:
     docker:
     - image: alpine:latest
