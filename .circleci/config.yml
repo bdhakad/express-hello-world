@@ -45,7 +45,7 @@ jobs:
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
             aws ssm get-parameter --name "instanceUrl" --with-decryption --output text --query Parameter.Value >> instanceUrl.txt     
       - save_cache:
-          key: my-cache-v2
+          key: my-cache-v3
           paths:
             - publicIp.txt
             - instanceUrl.txt
@@ -60,7 +60,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - my-cache-v2          
+            - my-cache-v3          
       - run:
           name: update public ip of instance in inventory.txt
           command: |
@@ -87,7 +87,7 @@ jobs:
       - run: apk add --update curl  
       - restore_cache:
           keys:
-            - my-cache-v2
+            - my-cache-v3
       - run: cat instanceUrl.txt
       - run:
           name: smoke_test
