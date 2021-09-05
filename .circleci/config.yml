@@ -56,7 +56,7 @@ jobs:
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
       - run: cat publicIp.txt      
       - save_cache:
-          key: my-cache
+          key: v1-my-cache
           paths:
             - publicIp.txt
             
@@ -68,7 +68,7 @@ jobs:
       - run: apk add --update curl 
       - restore_cache:
           keys:
-            - my-cache
+            - v1-my-cache
       - run: cat publicIp.txt  
       - run: echo $(<publicIp.txt)  
       - run:
