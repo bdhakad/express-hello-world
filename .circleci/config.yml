@@ -25,7 +25,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - "${CIRCLE_SHA1}"
+            - myapp-{{ checksum "main-remote.yml" }}
       - run: cat publicIp.txt       
       - run:
           name: update public ip of instance in inventory.txt
@@ -54,14 +54,14 @@ jobs:
             aws cloudformation deploy \
             --stack-name circle-stack \
             --template-file cfn-template.yml
-      - run: echo "${CIRCLE_SHA1}"      
+      - run: echo myapp-{{ checksum "main-remote.yml" }}      
       - run:
           name: pull public ips 
           command: |
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
             aws ssm get-parameter --name "instanceUrl" --with-decryption --output text --query Parameter.Value >> instanceUrl.txt     
       - save_cache:
-          key: "${CIRCLE_SHA1}"
+          key: myapp-{{ checksum "main-remote.yml" }}
           paths:
             - publicIp.txt
             - instanceUrl.txt
@@ -74,7 +74,7 @@ jobs:
       - run: apk add --update curl 
       - restore_cache:
           keys:
-            - "${CIRCLE_SHA1}"
+            - myapp-{{ checksum "main-remote.yml" }}
       - run: cat instanceUrl.txt
       - run:
           name: smoke_test
