@@ -36,7 +36,7 @@ jobs:
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
             aws ssm get-parameter --name "instanceUrl" --with-decryption --output text --query Parameter.Value >> instanceUrl.txt     
       - save_cache:
-          key: myapp-{{ checksum "main-remote.yml" }}
+          key: v1-my-cache
           paths:
             - publicIp.txt
             - instanceUrl.txt
@@ -49,7 +49,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - myapp-{{ checksum "main-remote.yml" }}
+            - v1-my-cache
       - run: cat inventory.txt 
       - run: cat publicIp.txt           
       - run:
@@ -78,7 +78,7 @@ jobs:
       - run: apk add --update curl 
       - restore_cache:
           keys:
-            - myapp-{{ checksum "main-remote.yml" }}
+            - v1-my-cache
       - run: cat instanceUrl.txt
       - run:
           name: smoke_test
