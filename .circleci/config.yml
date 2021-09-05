@@ -44,13 +44,13 @@ jobs:
             aws cloudformation deploy \
             --stack-name circle-stack \
             --template-file cfn-template.yml
-      - run: echo "${CIRCLE_SHA1}-my-cache"      
+      - run: echo ${CIRCLE_SHA1}      
       - run:
           name: pull public ips 
           command: |
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt     
       - save_cache:
-          key: "${CIRCLE_SHA1}-my-cache"
+          key: ${CIRCLE_SHA1}
           paths:
             - publicIp.txt
             
@@ -62,7 +62,7 @@ jobs:
       - run: apk add --update curl 
       - restore_cache:
           keys:
-            - "${CIRCLE_SHA1}-my-cache"
+            - ${CIRCLE_SHA1}
       - run: cat publicIp.txt   
       - run:
           name: smoke_test
