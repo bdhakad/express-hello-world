@@ -10,19 +10,13 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - create_infrastructure
-      # - configure_infrastructure:
-      #     requires:
-      #         - create_infrastructure
+      - configure_infrastructure:
+          requires:
+              - create_infrastructure
       - smoke_test:
           requires:
               - create_infrastructure        
-      # - build
-      # - test:
-      #     requires:
-      #       - build
-      # - analyze:
-      #     requires:
-      #       - test                  
+                 
 jobs:
   configure_infrastructure:
     docker:
@@ -80,44 +74,4 @@ jobs:
             else
               return 1
             fi         
-           
-
-  # build:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - run: npm install
-  #     - save_cache:
-  #         key: "npm-packages"
-  #         paths: 
-  #           - /src/node_modules
-  # test:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys:
-  #           - "npm-packages"
-  #     - run: npm i      
-  #     - run: npm run test
-  #     - run:
-  #         name: Upload Failed Tests
-  #         command: echo "test failures"
-  #         when: on_fail
-
-  # analyze:
-  #     docker:
-  #       - image: circleci/node:13.8.0
-  #     steps:
-  #       - checkout
-  #       - restore_cache:
-  #           keys:
-  #             - "npm-packages"
-  #       - run: npm audit
-  #       - run:
-  #           name: Upload Failed Tests
-  #           command: echo "test failures"
-  #           when: on_fail          
-      
+ 
