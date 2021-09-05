@@ -60,15 +60,17 @@ jobs:
     docker:
     - image: alpine:latest
     steps:
-      - checkout      
+      - checkout
+      - run: apk add --update curl      
       - run:
           name: smoke_test
           command: |
-            if curl -s --head "ec2-3-91-206-32.compute-1.amazonaws.com:3000" 
+            URL="http://ec2-3-91-206-32.compute-1.amazonaws.com:3000"
+            if curl -s --head ${URL}
             then
-              echo "It worked!"
+              return 0
             else
-              echo "It failed"
+              return 1
             fi         
            
 
