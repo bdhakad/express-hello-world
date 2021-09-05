@@ -50,10 +50,6 @@ jobs:
             aws cloudformation deploy \
             --stack-name circle-stack \
             --template-file cfn-template.yml
-      - run:
-          name: pull public ips 
-          command: |
-            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> output.txt
       - run: cat output.txt
             
   smoke_test:
@@ -61,7 +57,12 @@ jobs:
     - image: alpine:latest
     steps:
       - checkout
-      - run: apk add --update curl      
+      - image: amazon/aws-cli
+      - run: apk add --update curl
+      - run:
+          name: pull public ips 
+          command: |
+            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> output.txt      
       - run:
           name: smoke_test
           command: |
