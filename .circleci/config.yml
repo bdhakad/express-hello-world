@@ -37,7 +37,7 @@ commands:
             name: Destroy environment
             when: on_fail
             command: |
-              aws cloudformation delete-stack --stack-name myStack-f33f8
+              aws cloudformation delete-stack --stack-name myStack-3974b
                 
 jobs:
   # deploy infracture or update
@@ -50,7 +50,7 @@ jobs:
           name: Ensure backend infrastructure exists
           command: |
             aws cloudformation deploy \
-            --stack-name myStack-f33f8 \
+            --stack-name myStack-3974b \
             --template-file cfn-template.yml     
       - run:
           name: pull public ip and url for smoke test
@@ -126,7 +126,7 @@ jobs:
       - run:
             name: Destroy environment
             command: |
-              aws cloudformation delete-stack --stack-name myStack-f33f8
+              aws cloudformation delete-stack --stack-name myStack-3974b
 
 
 # myStack-${CIRCLE_WORKFLOW_ID:0:5}              
