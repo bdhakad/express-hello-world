@@ -53,7 +53,12 @@ jobs:
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text >> inventory.txt
-      - run: echo cat inventory.txt             
+      - run:
+          name: show public ips
+          command: |
+            echo aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text              
 
   # build:
   #   docker:
