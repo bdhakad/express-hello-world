@@ -31,13 +31,13 @@ commands:
                 --data revision=$CIRCLE_SHA1 \
                 https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
             fi                      
-  destroy_environment:
-      steps:
-        - run:
-            name: Destroy environment
-            when: on_fail
-            command: |
-              aws cloudformation delete-stack --stack-name myStack-3974b
+  # destroy_environment:
+  #     steps:
+  #       - run:
+  #           name: Destroy environment
+  #           when: on_fail
+  #           command: |
+  #             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID}
                 
 jobs:
   # deploy infracture or update
@@ -50,7 +50,7 @@ jobs:
           name: Ensure backend infrastructure exists
           command: |
             aws cloudformation deploy \
-            --stack-name myStack-3974b \
+            --stack-name myStack-${CIRCLE_WORKFLOW_ID} \
             --template-file cfn-template.yml     
       - run:
           name: pull public ip and url for smoke test
@@ -63,7 +63,7 @@ jobs:
             - publicIp.txt
             - instanceUrl.txt
       # rollback       
-      # - destroy_environment
+      - rollback
 
   #  configure the ec2 instance
   configure_infrastructure:
@@ -90,6 +90,7 @@ jobs:
           name: configure server
           command: |
             ansible-playbook -i inventory.txt main-remote.yml     
+      - rollback
 
   #  smoke test the app deployed
   smoke_test:
@@ -117,7 +118,8 @@ jobs:
           command: |
             return 1   
       # rollback       
-      - rollback    
+      - rollback
+          
   # deploy infracture or update
   delete_stack:
     docker:
@@ -126,7 +128,7 @@ jobs:
       - run:
             name: Destroy environment
             command: |
-              aws cloudformation delete-stack --stack-name myStack-3974b
+              aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID}
 
 
-# myStack-${CIRCLE_WORKFLOW_ID:0:5}              
+# myStack-${CIRCLE_WORKFLOW_ID}              
