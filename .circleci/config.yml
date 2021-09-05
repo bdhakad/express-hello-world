@@ -58,12 +58,12 @@ jobs:
           name: pull public ips 
           command: |
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
-            aws ssm get-parameter --name "instance_url" --with-decryption --output text --query Parameter.Value >> instance_url.txt     
+            aws ssm get-parameter --name "instanceUrl" --with-decryption --output text --query Parameter.Value >> instanceUrl.txt     
       - save_cache:
           key: ${CIRCLE_SHA1}
           paths:
             - publicIp.txt
-            - instance_url.txt
+            - instanceUrl.txt
             
   smoke_test:
     docker:
@@ -74,11 +74,11 @@ jobs:
       - restore_cache:
           keys:
             - ${CIRCLE_SHA1}
-      - run: cat instance_url.txt
+      - run: cat instanceUrl.txt
       - run:
           name: smoke_test
           command: |
-            value=`cat instance_url.txt`
+            value=`cat instanceUrl.txt`
             if curl -s --head $value
             then
               return 0
