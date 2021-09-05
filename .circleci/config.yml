@@ -65,7 +65,7 @@ jobs:
       - run:
           name: smoke_test
           command: |
-            if curl -s --head http://3.91.206.32:3000
+            if curl -s --head http://3.91.206.3289:3000
             then
               return 0
             else
