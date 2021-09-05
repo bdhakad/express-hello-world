@@ -69,7 +69,7 @@ jobs:
           keys:
             - my-cache
       - run: cat publicIp.txt  
-      - run: value=`cat publicIp.txt`
+      - run: value=$(<publicIp.txt)
       - run: echo $value   
       - run:
           name: smoke_test
