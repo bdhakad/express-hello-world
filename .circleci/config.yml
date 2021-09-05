@@ -50,6 +50,7 @@ jobs:
             aws cloudformation deploy \
             --stack-name circle-stack \
             --template-file cfn-template.yml
+      - run: echo "${CIRCLE_SHA1}-my-cache"      
       - run:
           name: pull public ips 
           command: |
