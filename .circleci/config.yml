@@ -10,12 +10,12 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - create_infrastructure
-      - configure_infrastructure:
-          requires:
-              - create_infrastructure
-      - smoke_test:
-          requires:
-              - configure_infrastructure        
+      # - configure_infrastructure:
+      #     requires:
+      #         - create_infrastructure
+      # - smoke_test:
+      #     requires:
+      #         - configure_infrastructure        
                  
 jobs:
   configure_infrastructure:
@@ -38,6 +38,7 @@ jobs:
     - image: amazon/aws-cli
     steps:
       - checkout 
+      - run: ls -ltra
       - run:
           name: Ensure backend infrastructure exists
           command: |
