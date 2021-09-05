@@ -25,7 +25,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - ${CIRCLE_SHA1} 
+            - ${CIRCLE_SHA1}
+      - run: cat publicIp.txt       
       - run:
           name: update public ip of instance in inventory.txt
           command: |
