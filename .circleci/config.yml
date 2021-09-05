@@ -65,8 +65,7 @@ jobs:
       - run:
           name: smoke_test
           command: |
-            URL="http://ec2-3-91-206-32.compute-1.amazonaws.com:3000"
-            if curl -s --head ${URL}
+            if curl -s --head ${SMOKE_TEST_URL}
             then
               return 0
             else
