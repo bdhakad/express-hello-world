@@ -10,12 +10,12 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - create_infrastructure
-      - configure_infrastructure:
-          requires:
-              - create_infrastructure
-      - smoke_test:
-          requires:
-              - configure_infrastructure        
+      # - configure_infrastructure:
+      #     requires:
+      #         - create_infrastructure
+      - smoke_test
+          # requires:
+          #     - configure_infrastructure        
       # - build
       # - test:
       #     requires:
@@ -66,8 +66,8 @@ jobs:
       - checkout
       - run: apk add --update curl 
       - restore_cache:
-          key: my-cache
-            - publicIp.txt
+          keys:
+            - my-cache
       - run: cat publicIp.txt        
       - run:
           name: smoke_test
