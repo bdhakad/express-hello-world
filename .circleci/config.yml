@@ -46,8 +46,8 @@ jobs:
             - publicIp.txt
             - instanceUrl.txt
       # rollback       
-      - destroy_environment
-        when: on_fail      
+      - destroy_environment:
+          when: on_fail      
 
   #  configure the ec2 instance
   configure_infrastructure:
@@ -75,8 +75,8 @@ jobs:
           command: |
             ansible-playbook -i inventory.txt main-remote.yml
       # rollback       
-      - destroy_environment
-        when: on_fail      
+      - destroy_environment:
+          when: on_fail      
 
   #  smoke test the app deployed
   smoke_test:
@@ -104,6 +104,6 @@ jobs:
           command: |
             return 1   
       # rollback       
-      - destroy_environment
-        when: on_fail            
+      - destroy_environment:
+          when: on_fail            
  
