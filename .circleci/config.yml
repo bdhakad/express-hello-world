@@ -32,10 +32,16 @@ jobs:
           name: install dependencies
           command: |
             apk add --update ansible
-      # - run:
-      #     name: configure server
-      #     command: |
-      #       ansible-playbook -i inventory.txt main-remote.yml
+      - run:
+          name: pull public ips in inventory.txt
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text >> inventory      
+      - run:
+          name: configure server
+          command: |
+            ansible-playbook -i inventory.txt main-remote.yml
   create_infrastructure:
     docker:
     - image: amazon/aws-cli
