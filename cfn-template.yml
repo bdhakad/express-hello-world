@@ -20,3 +20,11 @@ Resources:
           FromPort: "22"
           ToPort: "22"
           CidrIp: 0.0.0.0/0
+
+Outputs:
+  PublicIp:
+    Description: Server Public IP
+    Value: !GetAtt EC2Instance.PublicIp
+    Export:
+      Name: !Sub "PublicIp"    
+

@@ -19,3 +19,5 @@ then
 else
    echo "it failed"
 fi          
+
+aws --region=us-east-1 ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value
