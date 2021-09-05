@@ -15,14 +15,16 @@ workflows:
               - create_infrastructure
       - smoke_test:
           requires:
-              - configure_infrastructure        
-destroy_environment:
-    steps:
-      - run:
-          name: Destroy environment
-          when: on_fail
-          command: |
-            aws cloudformation delete-stack --stack-name circle-stack
+              - configure_infrastructure
+
+commands:                      
+  destroy_environment:
+      steps:
+        - run:
+            name: Destroy environment
+            when: on_fail
+            command: |
+              aws cloudformation delete-stack --stack-name circle-stack
                 
 jobs:
   # deploy infracture or update
