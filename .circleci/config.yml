@@ -16,7 +16,12 @@ workflows:
       - smoke_test:
           requires:
               - configure_infrastructure        
-                 
+commands:
+  destroy_environment:
+    steps:
+      - run:
+          name: Destroy environment
+          command: aws cloudformation delete-stack --stack-name circle-stack                 
 jobs:
   # deploy infracture or update
   create_infrastructure:
@@ -40,6 +45,9 @@ jobs:
           paths:
             - publicIp.txt
             - instanceUrl.txt
+      # rollback       
+      - destroy_environment
+        when: on_fail      
 
   #  configure the ec2 instance
   configure_infrastructure:
@@ -66,6 +74,9 @@ jobs:
           name: configure server
           command: |
             ansible-playbook -i inventory.txt main-remote.yml
+      # rollback       
+      - destroy_environment
+        when: on_fail      
 
   #  smoke test the app deployed
   smoke_test:
@@ -87,5 +98,12 @@ jobs:
               return 0
             else
               return 1
-            fi         
+            fi
+      - run:
+          name: simulate error
+          command: |
+            return 1   
+      # rollback       
+      - destroy_environment
+        when: on_fail            
  
