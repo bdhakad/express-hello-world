@@ -69,12 +69,11 @@ jobs:
           keys:
             - my-cache
       - run: cat publicIp.txt  
-      - run: value=$(<publicIp.txt)
-      - run: echo $value   
+      - run: echo $(<publicIp.txt)  
       - run:
           name: smoke_test
           command: |
-            if curl -s --head http://$value:3000
+            if curl -s --head $(<publicIp.txt)
             then
               return 0
             else
