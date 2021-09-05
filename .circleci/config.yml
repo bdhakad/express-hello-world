@@ -31,13 +31,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            apk add --update ansible
-      - run:
-          name: pull public ips in inventory.txt
-          command: |
-            aws ec2 describe-instances \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text >> inventory      
+            apk add --update ansible     
       - run:
           name: configure server
           command: |
@@ -53,6 +47,12 @@ jobs:
             aws cloudformation deploy \
             --stack-name circle-stack \
             --template-file cfn-template.yml
+      - run:
+          name: pull public ips in inventory.txt
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text >> inventory.txt       
 
   # build:
   #   docker:
