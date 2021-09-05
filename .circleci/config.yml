@@ -37,7 +37,7 @@ commands:
             name: Destroy environment
             when: on_fail
             command: |
-              aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
+              aws cloudformation delete-stack --stack-name myStack-f33f8
                 
 jobs:
   # deploy infracture or update
@@ -50,7 +50,7 @@ jobs:
           name: Ensure backend infrastructure exists
           command: |
             aws cloudformation deploy \
-            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+            --stack-name myStack-f33f8 \
             --template-file cfn-template.yml     
       - run:
           name: pull public ip and url for smoke test
@@ -58,7 +58,7 @@ jobs:
             aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
             aws ssm get-parameter --name "instanceUrl" --with-decryption --output text --query Parameter.Value >> instanceUrl.txt     
       - save_cache:
-          key: my-cache-v3
+          key: my-cache-v4
           paths:
             - publicIp.txt
             - instanceUrl.txt
@@ -73,7 +73,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - my-cache-v3          
+            - my-cache-v4          
       - run:
           name: update public ip of instance in inventory.txt
           command: |
@@ -100,7 +100,7 @@ jobs:
       - run: apk add --update curl  
       - restore_cache:
           keys:
-            - my-cache-v3
+            - my-cache-v4
       - run: cat instanceUrl.txt
       - run:
           name: smoke_test
@@ -126,4 +126,7 @@ jobs:
       - run:
             name: Destroy environment
             command: |
-              aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
+              aws cloudformation delete-stack --stack-name myStack-f33f8
+
+
+# myStack-${CIRCLE_WORKFLOW_ID:0:5}              
