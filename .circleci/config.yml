@@ -17,7 +17,20 @@ workflows:
           requires:
               - configure_infrastructure
 
-commands:                      
+commands:
+  rollback:
+    steps:
+      - run:
+          name: conditionally run a delete job
+          when: on_fail
+          command: |
+            # replace this with your build/deploy check (i.e. current branch is "release")
+            if [[ true ]]; then
+              curl --user ${CIRCLE_API_USER_TOKEN}: \
+                --data 'build_parameters[CIRCLE_JOB]=delete_stack' \
+                --data revision=$CIRCLE_SHA1 \
+                https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
+            fi                      
   destroy_environment:
       steps:
         - run:
@@ -50,7 +63,7 @@ jobs:
             - publicIp.txt
             - instanceUrl.txt
       # rollback       
-      - destroy_environment
+      # - destroy_environment
 
   #  configure the ec2 instance
   configure_infrastructure:
@@ -99,10 +112,18 @@ jobs:
             else
               return 1
             fi
-      # - run:
-      #     name: simulate error
-      #     command: |
-      #       return 1   
+      - run:
+          name: simulate error
+          command: |
+            return 1   
       # rollback       
-      - destroy_environment           
- 
+      - rollback    
+  # deploy infracture or update
+  delete_stack:
+    docker:
+    - image: amazon/aws-cli
+    steps:
+      - run:
+            name: Destroy environment
+            command: |
+              aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
