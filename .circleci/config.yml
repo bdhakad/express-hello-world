@@ -68,7 +68,8 @@ jobs:
       - restore_cache:
           keys:
             - my-cache
-      - run: cat publicIp.txt        
+      - run: cat publicIp.txt  
+      - run: $(<publicIp.txt)      
       - run:
           name: smoke_test
           command: |
