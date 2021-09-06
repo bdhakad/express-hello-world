@@ -69,7 +69,7 @@ jobs:
             --stack-name production-distro \
             --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
-          name: Execute cloudfront.yml
+          name: Create CDN invalidation to pick new changes
           command: |
             aws cloudformation describe-stacks --stack-name production-distro --query "Stacks[0].Outputs[?OutputKey=='WebpageCDN'].OutputValue" --output text >> distribution.txt 
             distributionId=`cat distribution.txt`
