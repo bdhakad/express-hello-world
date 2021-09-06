@@ -30,3 +30,15 @@ Outputs:
     Value: !Sub ${PipelineID}
     Export:
       Name: PipelineID
+
+  WebpageCDN:
+    Description: 'CloudFront distribution ID'
+    Value: !Ref WebpageCDN
+    Export:
+      Name: CloudFrontDistribution
+
+  CloudFrontDistribution:
+    Description: 'CloudFront URL'
+    Value: !GetAtt WebpageCDN.DomainName
+    Export:
+      Name: CloudFrontDistribution    
