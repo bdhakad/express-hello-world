@@ -41,4 +41,4 @@ Outputs:
     Description: 'CloudFront URL'
     Value: !GetAtt WebpageCDN.DomainName
     Export:
-      Name: CloudFrontDistribution    
+      Name: CloudFrontURL    
