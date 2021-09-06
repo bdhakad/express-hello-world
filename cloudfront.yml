@@ -35,7 +35,7 @@ Outputs:
     Description: 'CloudFront distribution ID'
     Value: !Ref WebpageCDN
     Export:
-      Name: CloudFrontDistribution
+      Name: CloudFrontDistributionID
 
   CloudFrontDistribution:
     Description: 'CloudFront URL'
