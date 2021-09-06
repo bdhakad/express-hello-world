@@ -1,0 +1,134 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
+
+workflows:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
+    jobs:
+      - create_infrastructure
+      - configure_infrastructure:
+          requires:
+              - create_infrastructure
+      - smoke_test:
+          requires:
+              - configure_infrastructure
+
+commands:
+  rollback:
+    steps:
+      - run:
+          name: conditionally run a delete job
+          when: on_fail
+          command: |
+            # replace this with your build/deploy check (i.e. current branch is "release")
+            if [[ true ]]; then
+              curl --user ${CIRCLE_API_USER_TOKEN}: \
+                --data 'build_parameters[CIRCLE_JOB]=delete_stack' \
+                --data revision=$CIRCLE_SHA1 \
+                https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
+            fi                      
+  # destroy_environment:
+  #     steps:
+  #       - run:
+  #           name: Destroy environment
+  #           when: on_fail
+  #           command: |
+  #             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID}
+                
+jobs:
+  # deploy infracture or update
+  create_infrastructure:
+    docker:
+    - image: amazon/aws-cli
+    steps:
+      - checkout 
+      - run:
+          name: Ensure backend infrastructure exists
+          command: |
+            aws cloudformation deploy \
+            --stack-name myStack-${CIRCLE_WORKFLOW_ID} \
+            --template-file cfn-template.yml     
+      - run:
+          name: pull public ip and url for smoke test
+          command: |
+            aws ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value >> publicIp.txt
+            aws ssm get-parameter --name "instanceUrl" --with-decryption --output text --query Parameter.Value >> instanceUrl.txt     
+      - save_cache:
+          key: my-cache-v4
+          paths:
+            - publicIp.txt
+            - instanceUrl.txt
+      # rollback       
+      - rollback
+
+  #  configure the ec2 instance
+  configure_infrastructure:
+    docker:
+    - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - my-cache-v4          
+      - run:
+          name: update public ip of instance in inventory.txt
+          command: |
+            value=`cat publicIp.txt`
+            echo $value >> inventory.txt          
+      - run: cat inventory.txt
+      - add_ssh_keys:
+          fingerprints: ["4c:e6:72:4d:76:84:ef:12:2b:ea:d7:d5:66:d5:41:79"]
+      - run:
+          name: install dependencies
+          command: |
+            apk add --update ansible     
+      - run:
+          name: configure server
+          command: |
+            ansible-playbook -i inventory.txt main-remote.yml     
+      - rollback
+
+  #  smoke test the app deployed
+  smoke_test:
+    docker:
+    - image: alpine:latest
+    steps:
+      - checkout
+      - run: apk add --update curl  
+      - restore_cache:
+          keys:
+            - my-cache-v4
+      - run: cat instanceUrl.txt
+      - run:
+          name: smoke_test
+          command: |
+            value=`cat instanceUrl.txt`
+            if curl -s --head $value
+            then
+              return 0
+            else
+              return 1
+            fi
+      - run:
+          name: simulate error
+          command: |
+            return 1   
+      # rollback       
+      - rollback
+          
+  # deploy infracture or update
+  delete_stack:
+    docker:
+    - image: amazon/aws-cli
+    steps:
+      - run:
+            name: Destroy environment
+            command: |
+              aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID}
+
+
+# myStack-${CIRCLE_WORKFLOW_ID}              

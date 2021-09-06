@@ -21,3 +21,6 @@ else
 fi          
 
 aws --region=us-east-1 ssm get-parameter --name "PublicIp" --with-decryption --output text --query Parameter.Value
+
+
+aws cloudformation deploy --template-file cloudfront.yml --stack-name production-distro --parameter-overrides PipelineID=mybucket644752792305 --tags project=udapeople
