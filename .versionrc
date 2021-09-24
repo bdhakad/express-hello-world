@@ -1,6 +1,6 @@
 {
     "types": [
-    {"type": "feat", "section": "Features"},
+    {"type": "feat", "section": "Features", "hidden": false},
     {"type": "fix", "section": "Bug Fixes"},
     {"type": "chore", "hidden": true},
     {"type": "docs", "hidden": true},
