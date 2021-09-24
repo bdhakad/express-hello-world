@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/bdhakad/express-hello-world/compare/v1.1.0...v1.2.0) (2021-09-24)
+
+
+### Features
+
+* **aimlcoe-0001:** create changelog with commitizen and standard version ([3bc3410](https://github.com/bdhakad/express-hello-world/commit/3bc3410ee4c70ff44474f48db23205f7c36956ee))
+
 ## [1.1.0](https://github.com/bdhakad/express-hello-world/compare/v1.0.4...v1.1.0) (2021-09-24)
 
 
