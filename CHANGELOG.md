@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/bdhakad/express-hello-world/compare/v1.4.0...v1.4.1) (2021-09-24)
+
+
+### Bug Fixes
+
+* **tests:** [AIMLCOE-3254](https://jira-dts.fm.rbsgrp.net/browse/AIMLCOE-3254) ([38413d7](https://github.com/bdhakad/express-hello-world/commit/38413d74b95a1e4673558dc8f018c13691c1ae31))
+
 ## [1.4.0](https://github.com/bdhakad/express-hello-world/compare/v1.3.0...v1.4.0) (2021-09-24)
 
 
