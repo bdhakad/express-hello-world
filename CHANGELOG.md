@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/bdhakad/express-hello-world/compare/v1.2.0...v1.3.0) (2021-09-24)
+
+
+### Features
+
+* **https://jira-dts.fm.rbsgrp.net/browse/aimlcoe-3254:** test 1 ([69947d9](https://github.com/bdhakad/express-hello-world/commit/69947d9aa0a71ac42c717a0167b64c0fad090970))
+
 ## [1.2.0](https://github.com/bdhakad/express-hello-world/compare/v1.1.0...v1.2.0) (2021-09-24)
 
 
